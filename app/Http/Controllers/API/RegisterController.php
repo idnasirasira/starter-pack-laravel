@@ -25,17 +25,27 @@ class RegisterController extends BaseController
             'c_password' => 'required|same:password',
         ]);
 
-
         if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+            return $this->sendError('Validation Error.', $validator->errors());
         }
 
+        $input                  = $request->all();
+        $input['password']      = bcrypt($input['password']);
 
-        $input = $request->all();
-        $input['password'] = bcrypt($input['password']);
-        $user = User::create($input);
-        $success['token'] =  $user->createToken('MyApp')->accessToken;
-        $success['name'] =  $user->name;
+        /* Check Email Registered */
+        $checkEmail             = User::where('email', '=', $input['email'])->get()->first();
+        if ($checkEmail !== null) {
+            return $this->sendError('Email Registered.');
+        }
+
+        $user                   = User::create($input);
+
+        $access_token           = $user->createToken('MyApp')->accessToken;;
+        $user->access_token     = $access_token;
+        $user->save();
+
+        $success['access_token'] = $access_token;
+        $success['name']         = $user->name;
 
 
         return $this->sendResponse($success, 'User register successfully.');

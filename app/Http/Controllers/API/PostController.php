@@ -17,7 +17,7 @@ class PostController extends BaseController
      */
     public function index()
     {
-        $posts = Post::all();
+        $posts = Post::with('user')->get();
 
 
         return $this->sendResponse($posts->toArray(), 'Posts retrieved successfully.');
@@ -118,4 +118,5 @@ class PostController extends BaseController
 
         return $this->sendResponse($post->toArray(), 'Post deleted successfully.');
     }
+
 }
