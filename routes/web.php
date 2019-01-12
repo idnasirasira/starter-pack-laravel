@@ -14,17 +14,17 @@
 
 /* Send Email Route Queue */
 Route::get('send-email', function(){
-  
+
 	$details['email'] = 'arris.smpn6@gmail.com';
-  
+
     dispatch(new App\Jobs\SendEmailJob($details));
-  
+
     dd('done');
 });
 
 /* FrontEnd */
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
 
 
